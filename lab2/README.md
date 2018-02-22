@@ -128,19 +128,19 @@ The requirements are:
     * Windows: install python compiler
     * Mac/Linux: run with command line
 * Command
-    
+```
     python rs232.py
-
+```
 
 ## Testbench Usage
 
 * Test Rsa256Core
-
+```
     ncverilog +access+r [path to tb.sv]
-
+```
 * Test Rsa256Wrapper 
-
+```
     ncverilog +access+r [path to PipelineCtrl.v] [path to PipelineTb.v] [path to test_wrapper.sv]
-
-*NOTICE:* Please follow the exact argument order, wrong order may lead to error. 
+```
+**NOTICE:** Please follow the exact argument order, wrong order may lead to error. 
 
