@@ -1,4 +1,4 @@
-# Guideline
+# Lab2 Guideline
 
 The roadmap of this lab:
 

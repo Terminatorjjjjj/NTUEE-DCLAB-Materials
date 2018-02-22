@@ -1,4 +1,4 @@
-# Guideline
+# Lab1 Guideline
 ## Synthesizable Verilog
 In Verilog, only a subset of syntax can be compiled to hardware,
 and we call them the *synthesizable* code.
