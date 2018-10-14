@@ -136,11 +136,12 @@ The requirements are:
 
 * Test Rsa256Core
 ```
-    ncverilog +access+r [path to tb.sv]
+    ncverilog +access+r <tb.sv> <Rsa256Core.sv>
 ```
 * Test Rsa256Wrapper 
 ```
-    ncverilog +access+r [path to PipelineCtrl.v] [path to PipelineTb.v] [path to test_wrapper.sv]
+    ncverilog +access+r <test_wrapper.sv> <PipelineCtrl.v> <PipelineTb.v> \ 
+    <Rsa256Wrapper.sv> <Rsa256Core.sv>
 ```
 **NOTICE:** Please follow the exact argument order, wrong order may lead to error. 
 

@@ -25,8 +25,8 @@ module tb;
 	initial begin
 		$fsdbDumpfile("lab2.fsdb");
 		$fsdbDumpvars;
-		fp_e = $fopen("../pc_sw/golden/enc1.bin", "rb");
-		fp_d = $fopen("../pc_sw/golden/dec1.txt", "rb");
+		fp_e = $fopen("../pc_python/golden/enc1.bin", "rb");
+		fp_d = $fopen("../pc_python/golden/dec1.txt", "rb");
 		rst = 1;
 		#(2*CLK)
 		rst = 0;
