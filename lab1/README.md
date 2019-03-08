@@ -71,7 +71,7 @@ Guess and observe what will happen?
         o_random_out <= random_out_w;
       end
       else begin
-      	o_random_out <= 4'd1;
+        o_random_out <= 4'd1;
       end
     end
 
