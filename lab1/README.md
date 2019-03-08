@@ -53,7 +53,7 @@ Guess and observe what will happen?
         random_out_w = (random_out_r == 4'd5) ? 4'd0 : (random_out_r + 4'd1);
       end
       else begin
-        random_out_w = o_random_out_r;
+        random_out_w = random_out_r;
       end
     end
     
