@@ -66,6 +66,13 @@ Guess and observe what will happen?
       end
     end
 
+First, press *Key1* to reset and the dispay would show red "00". Now, everytime you press *Key0*, the number would increase by 1.
+Observe when the number returns to 0?
+.
+.
+.
+A: 5
+
 # FAQ
 ## My Verilog Pass the Simulation, but It Doesn't Work.
 Again, in Verilog, only a subset of syntax can be compiled to hardware.
@@ -118,7 +125,7 @@ Verilog coding style checking
 Simulate the core file(s)
 
     cd lab1/sim/
-    make -f ../Makefile Top
+    make -f ../../Makefile Top
 
 And you can use nWave to check the signals of your Verilog code.
 
