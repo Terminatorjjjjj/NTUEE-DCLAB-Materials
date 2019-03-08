@@ -63,7 +63,7 @@ Guess and observe what will happen?
         random_out_w = o_random_out;
       end
     end
-    always_ff @(posedge i_clk or negedge i_rst)
+    always_ff @(posedge i_clk or negedge i_rst) begin
       if (!i_rst) begin
         o_random_out <= 4'd0;
       end
