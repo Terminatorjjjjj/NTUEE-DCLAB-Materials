@@ -7,25 +7,15 @@ Here is some guidelines about the recommended synthesizable code.
 ## Register and the Sequential Block
 The ONLY way you should use to generate registers is:
 
-    always_ff (posedge clk or negedge rst) if (!rst)
-      a_r <= 1'b0;
-      b_r <= '0;
-    else begin
-      a_r <= a_w;
-      b_r <= b_w;
-    end
-
-Note that I prefer to write *if reset* right after the first line,
-which can prevent an extra indent.
-Using an extra condition is also OK.
-In fact, it's a simple techique for power saving.
-
-    always_ff (posedge clk or negedge rst) if (!rst)
-      a_r <= 1'b0;
-      b_r <= '0;
-    else if (cond) begin
-      a_r <= a_w;
-      b_r <= b_w;
+    always_ff @(posedge clk or negedge rst) begin
+      if (!rst) begin
+        a_r <= 1'b0;
+        b_r <= '0;
+      end
+      else begin
+        a_r <= a_w;
+        b_r <= b_w;
+      end
     end
 
 ## Register (Sequential Blocks) and Combinational Blocks
@@ -45,33 +35,34 @@ And be careful when X\_w appears in right hand side of combinational blocks.
     always_comb begin
       a_w = b_w + 1; // possibly wrong
     end
-    always_ff (posedge clk or negedge rst) if (!rst)
+    always_ff @(posedge clk or negedge rst) if (!rst)
       a_w <= 0; // definitely wrong
     else if (cond) begin
       a_w <= ...; // definitely wrong
     end
 
 ## A Working Example
-Add this lines in Top.sv, compile (Ctrl+L) and program it to DE2-115.
+Add these lines in Top.sv, compile (Ctrl+L) and program it to DE2-115.
 Guess and observe what will happen?
 
-    logic [3:0] random_out_w, o_random_out;
+    logic [3:0] random_out_r, random_out_w;
+    assign o_random_out = random_out_r;
+    
     always_comb begin
       if (i_start) begin
-        random_out_w = (o_random_out == 4'd5) ? 4'd0 : (o_random_out + 4'd1);
-      end else begin
-        random_out_w = o_random_out;
-      end
-    end
-    always_ff @(posedge i_clk or negedge i_rst) begin
-      if (!i_rst) begin
-        o_random_out <= 4'd0;
-      end
-      else if (i_start) begin
-        o_random_out <= random_out_w;
+        random_out_w = (random_out_r == 4'd5) ? 4'd0 : (random_out_r + 4'd1);
       end
       else begin
-        o_random_out <= 4'd1;
+        random_out_w = o_random_out_r;
+      end
+    end
+    
+    always_ff @(posedge i_clk or negedge i_rst) begin
+      if (!i_rst) begin
+        random_out_r <= 4'd0;
+      end
+      else begin
+        random_out_r <= random_out_w;
       end
     end
 
