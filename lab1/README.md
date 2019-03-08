@@ -55,7 +55,7 @@ And be careful when X\_w appears in right hand side of combinational blocks.
 Add this lines in Top.sv, compile (Ctrl+L) and program it to DE2-115.
 Guess and observe what will happen?
 
-    logic random_out_w;
+    logic [3:0] random_out_w, o_random_out;
     always_comb begin
       if (i_start) begin
         random_out_w = (o_random_out == 4'd5) ? 4'd0 : (o_random_out + 4'd1);
