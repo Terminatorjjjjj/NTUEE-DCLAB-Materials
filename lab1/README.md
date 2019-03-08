@@ -58,20 +58,20 @@ Guess and observe what will happen?
     logic random_out_w;
     always_comb begin
       if (i_start) begin
-        random_out_w = (o_random_out == 4'd5) ? 4'b0 : (o_random_out + 4'b1);
+        random_out_w = (o_random_out == 4'd5) ? 4'd0 : (o_random_out + 4'd1);
       end else begin
         random_out_w = o_random_out;
       end
     end
     always_ff @(posedge i_clk or negedge i_rst)
       if (!i_rst) begin
-        o_random_out <= 4'b0;
+        o_random_out <= 4'd0;
       end
       else if (i_start) begin
         o_random_out <= random_out_w;
       end
       else begin
-      	o_random_out <= 4'b1;
+      	o_random_out <= 4'd1;
       end
     end
 
