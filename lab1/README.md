@@ -70,6 +70,9 @@ Guess and observe what will happen?
       else if (i_start) begin
         o_random_out <= random_out_w;
       end
+      else begin
+      	o_random_out <= 4'b1;
+      end
     end
 
 # FAQ
