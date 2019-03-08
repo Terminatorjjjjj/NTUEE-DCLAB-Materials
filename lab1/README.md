@@ -121,7 +121,7 @@ Verilog coding style checking
 Simulate the core file(s)
 
     cd lab1/sim/
-    make -f ../../Makefile Top
+    make -f ../Makefile Top
 
 And you can use nWave to check the signals of your Verilog code.
 
