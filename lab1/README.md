@@ -119,7 +119,7 @@ please follow these steps:
 Verilog coding style checking
 
     cd lab1/lint/
-    make Top
+    make ../src/Top
 
 ## Simulation
 Simulate the core file(s)
