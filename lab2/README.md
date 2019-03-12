@@ -123,7 +123,7 @@ The requirements are:
 
 ## Run pc_python program on pc
 
-* Recommended python version: Python3
+* Recommended python version: Python2
 * Usage
     * Windows: install python compiler
     * Mac/Linux: run with command line
