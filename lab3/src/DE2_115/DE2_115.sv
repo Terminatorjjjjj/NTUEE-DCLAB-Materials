@@ -141,7 +141,7 @@ module DE2_115(
 	logic [15:0] sram_wdata;
 	assign I2C_SDAT = i2c_oen ? i2c_sdat : 1'bz;
 	assign SRAM_DQ = /* TODO */;
-	/* TODO: Add PLL to generate a 100kHz clock (Google is your friend) */
+	/* TODO: Add PLL to generate a 100kHz clock (Generate ALTPLL module with Qsys) */
 	I2CSender u_i2c(
 		// .i_clk(pll_clk),
 		.i_rst(KEY[0]),
