@@ -42,36 +42,72 @@ And be careful when X\_w appears in right hand side of combinational blocks.
     end
 
 ## A Working Example
-Add these lines in Top.sv, compile (Ctrl+L) and program it to DE2-115.
+Compile (Ctrl+L) the Top module below and program it to DE2-115.
 Guess and observe what will happen?
 
-    logic [3:0] random_out_r, random_out_w;
-    assign o_random_out = random_out_r;
-    
+    module Top (
+        input        i_clk,
+        input        i_rst,
+        input        i_start,
+        output [3:0] o_random_out
+    );
+
+    // ===== States =====
+    parameter S_IDLE = 1'b0;
+    parameter S_PROC = 1'b1;
+
+    // ===== Output Buffers =====
+    logic [3:0] o_random_out_r, o_random_out_w;
+
+    // ===== Registers & Wires =====
+    logic state_r, state_w;
+
+    // ===== Output Assignments =====
+    assign o_random_out = o_random_out_r;
+
+    // ===== Combinational Circuits =====
     always_comb begin
-      if (i_start) begin
-        random_out_w = (random_out_r == 4'd5) ? 4'd0 : (random_out_r + 4'd1);
-      end
-      else begin
-        random_out_w = random_out_r;
-      end
-    end
-    
-    always_ff @(posedge i_clk or negedge i_rst) begin
-      if (!i_rst) begin
-        random_out_r <= 4'd0;
-      end
-      else begin
-        random_out_r <= random_out_w;
-      end
+       // Default Values
+       o_random_out_w = o_random_out_r;
+       state_w        = state_r;
+
+       // FSM
+       case(state_r)
+       S_IDLE: begin
+          if (i_start) begin
+             state_w = S_PROC;
+             o_random_out_w = 4'd15;
+          end
+       end
+
+       S_PROC: begin
+          if (i_start) begin
+             state_w = (o_random_out_r == 4'd10) ? S_IDLE : state_w;
+             o_random_out_w = (o_random_out_r == 4'd10) ? 4'd1 : (o_random_out_r - 4'd1);
+          end
+       end
+
+       endcase
     end
 
-First, press *Key1* to reset and the dispay would show red "00". Now, everytime you press *Key0*, the number would increase by 1.
-Observe when the number returns to 0?
-.
-.
-.
-A: 5
+    // ===== Sequential Circuits =====
+    always_ff @(posedge i_clk or negedge i_rst) begin
+       // reset
+       if (!i_rst) begin
+          o_random_out_r <= 4'd0;
+          state_r        <= S_IDLE;
+       end
+       else begin
+          o_random_out_r <= o_random_out_w;
+          state_r        <= state_w;
+       end
+    end
+
+First, press *Key1* to reset and the dispay would show red "00". 
+If you press *Key0* when display shows "00", it will become "15".
+Every subsequent *Key0* press will decrease the number by 1 until "10" is reached.
+Press *Key0* then the number would become "01".
+Another press will start the countdown again from "15".
 
 # FAQ
 ## My Verilog Pass the Simulation, but It Doesn't Work.
