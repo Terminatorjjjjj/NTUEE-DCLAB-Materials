@@ -1,4 +1,4 @@
-module PPForward(
+module PPForward (
 	input      clk,
 	input      rst,
 	input      src_rdy,

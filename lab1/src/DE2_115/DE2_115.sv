@@ -1,4 +1,4 @@
-module DE2_115(
+module DE2_115 (
 	input CLOCK_50,
 	input CLOCK2_50,
 	input CLOCK3_50,
@@ -135,31 +135,36 @@ module DE2_115(
 	output [16:0] HSMC_TX_D_P,
 	inout [6:0] EX_IO
 );
-	logic keydown;
-	logic [3:0] random_value;
-	Debounce deb0(
-		.i_in(KEY[0]),
-		.i_rst(KEY[1]),
-		.i_clk(CLOCK_50),
-		.o_neg(keydown)
-	);
-	Top top0(
-		.i_clk(CLOCK_50),
-		.i_rst(KEY[1]),
-		.i_start(keydown),
-		.o_random_out(random_value)
-	);
-	SevenHexDecoder seven_dec0(
-		.i_hex(random_value),
-		.o_seven_ten(HEX1),
-		.o_seven_one(HEX0)
-	);
-	assign HEX2 = '1;
-	assign HEX3 = '1;
-	assign HEX4 = '1;
-	assign HEX5 = '1;
-	assign HEX6 = '1;
-	assign HEX7 = '1;
+
+logic keydown;
+logic [3:0] random_value;
+
+Debounce deb0(
+	.i_in(KEY[0]),
+	.i_rst(KEY[1]),
+	.i_clk(CLOCK_50),
+	.o_neg(keydown)
+);
+
+Top top0(
+	.i_clk(CLOCK_50),
+	.i_rst(KEY[1]),
+	.i_start(keydown),
+	.o_random_out(random_value)
+);
+
+SevenHexDecoder seven_dec0(
+	.i_hex(random_value),
+	.o_seven_ten(HEX1),
+	.o_seven_one(HEX0)
+);
+
+assign HEX2 = '1;
+assign HEX3 = '1;
+assign HEX4 = '1;
+assign HEX5 = '1;
+assign HEX6 = '1;
+assign HEX7 = '1;
 
 `ifdef DUT_LAB1
 	initial begin
@@ -167,4 +172,5 @@ module DE2_115(
 		$fsdbDumpvars(0, DE2_115, "+mda");
 	end
 `endif
+
 endmodule

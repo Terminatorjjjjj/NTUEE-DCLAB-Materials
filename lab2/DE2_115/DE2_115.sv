@@ -1,4 +1,4 @@
-module DE2_115(
+module DE2_115 (
 	input CLOCK_50,
 	input CLOCK2_50,
 	input CLOCK3_50,
@@ -135,10 +135,14 @@ module DE2_115(
 	output [16:0] HSMC_TX_D_P,
 	inout [6:0] EX_IO
 );
-	DE2_115_qsys my_qsys(
-		.clk_clk(CLOCK_50),
-		.rst_reset_n(KEY[0]),
-		.uart_0_external_connection_rxd(UART_RXD),
-		.uart_0_external_connection_txd(UART_TXD)
-	);
+
+// please replace this module with the qsys module you generated
+// and connect all the ports
+DE2_115_qsys my_qsys(
+	.clk_clk(CLOCK_50),
+	.rst_reset_n(KEY[0]),
+	.uart_0_external_connection_rxd(UART_RXD),
+	.uart_0_external_connection_txd(UART_TXD)
+);
+
 endmodule

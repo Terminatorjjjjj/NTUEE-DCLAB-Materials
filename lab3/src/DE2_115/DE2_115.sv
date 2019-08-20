@@ -1,4 +1,4 @@
-module DE2_115(
+module DE2_115 (
 	input CLOCK_50,
 	input CLOCK2_50,
 	input CLOCK3_50,
@@ -47,8 +47,7 @@ module DE2_115(
 	inout AUD_ADCLRCK,
 	inout AUD_BCLK,
 	output AUD_DACDAT,
-	// inout AUD_DACLRCK,
-	input AUD_DACLRCK,
+	inout AUD_DACLRCK,
 	output AUD_XCK,
 	output EEP_I2C_SCLK,
 	inout EEP_I2C_SDAT,
@@ -136,35 +135,112 @@ module DE2_115(
 	output [16:0] HSMC_TX_D_P,
 	inout [6:0] EX_IO
 );
-	// inout port at this layer
-	logic i2c_oen, i2c_sdat;
-	logic [15:0] sram_wdata;
-	assign I2C_SDAT = i2c_oen ? i2c_sdat : 1'bz;
-	assign SRAM_DQ = /* TODO */;
-	/* TODO: Add PLL to generate a 100kHz clock (Generate ALTPLL module with Qsys) */
-	I2CSender u_i2c(
-		// .i_clk(pll_clk),
-		.i_rst(KEY[0]),
-		.o_sclk(I2C_SCLK),
-		.o_sdat(i2c_sdat),
-		// you are outputing (you are not outputing only when you are "ack"ing.)
-		.o_oen(i2c_oen)
-	);
-	// And add your module here, it roughly looks like this
-	YourModule u_your_module(
-		.i_clk(AUD_BCLK),
-		.i_rst(KEY[0]),
-		.i_adc_dat(AUD_ADCDAT),
-		.i_adc_clk(AUD_ADCLRCK),
-		.o_dac_dat(AUD_DACDAT),
-		.i_dac_clk(AUD_DACLRCK),
-		.o_sram_adr(SRAM_ADDR),
-		.i_sram_rdata(SRAM_DQ),
-		.o_sram_wdata(sram_wdata),
-		.o_sram_cen(SRAM_CE_N),
-		.o_sram_lb(SRAM_LB_N),
-		.o_sram_ue(SRAM_UB_N),
-		.o_sram_oe(SRAM_OE_N),
-		.o_sram_we(SRAM_WE_N)
-	);
+
+logic key0down, key1down, key2down, key3down;
+logic CLK_12M, CLK_100K, CLK_800K;
+
+assign AUD_XCK = CLK_12M;
+
+Altpll pll0( // generate with qsys, please follow lab2 tutorials
+	.clk_clk(CLOCK_50),
+	.reset_reset_n(key3down),
+	.altpll_12m_clk(CLK_12M),
+	.altpll_100k_clk(CLK_100K),
+	.altpll_800k_clk(CLK_800K)
+);
+
+// you can decide key down settings on your own, below is just an example
+Debounce deb0(
+	.i_in(KEY[0]), // Record/Pause
+	.i_clk(CLK_12M),
+	.o_neg(key0down) 
+);
+
+Debounce deb1(
+	.i_in(KEY[1]), // Play/Pause
+	.i_clk(CLK_12M),
+	.o_neg(key1down) 
+);
+
+Debounce deb2(
+	.i_in(KEY[2]), // Stop
+	.i_clk(CLK_12M),
+	.o_neg(key2down) 
+);
+
+Debounce deb3(
+	.i_in(KEY[3]), // Reset
+	.i_clk(CLK_12M),
+	.o_neg(key3down) 
+);
+
+Top top0(
+	.i_rst(key3down),
+	.i_clk(CLK_12M),
+	.i_key_0(key0down),
+	.i_key_1(key1down),
+	.i_key_2(key2down),
+	// .i_speed(SW[3:0]), // design how user can decide mode on your own
+	
+	// AudDSP and SRAM
+	.o_SRAM_ADDR(SRAM_ADDR), // [19:0]
+	.io_SRAM_DQ(SRAM_DQ), // [15:0]
+	.o_SRAM_WE_N(SRAM_WE_N),
+	.o_SRAM_CE_N(SRAM_CE_N),
+	.o_SRAM_OE_N(SRAM_OE_N),
+	.o_SRAM_LB_N(SRAM_LB_N),
+	.o_SRAM_UB_N(SRAM_UB_N),
+	
+	// I2C
+	.i_clk_100k(CLK_100K),
+	.o_I2C_SCLK(I2C_SCLK),
+	.io_I2C_SDAT(I2C_SDAT),
+	
+	// AudPlayer
+	.i_AUD_ADCDAT(AUD_ADCDAT),
+	.i_AUD_ADCLRCK(AUD_ADCLRCK),
+	.i_AUD_BCLK(AUD_BCLK),
+	.i_AUD_DACLRCK(AUD_DACLRCK),
+	.o_AUD_DACDAT(AUD_DACDAT)
+
+	// SEVENDECODER (optional display)
+	// .o_record_time(recd_time),
+	// .o_play_time(play_time),
+
+	// LCD (optional display)
+	// .i_clk_800k(CLK_800K),
+	// .o_LCD_DATA(LCD_DATA), // [7:0]
+	// .o_LCD_EN(LCD_EN),
+	// .o_LCD_RS(LCD_RS),
+	// .o_LCD_RW(LCD_RW),
+	// .o_LCD_ON(LCD_ON),
+	// .o_LCD_BLON(LCD_BLON),
+
+	// LED
+	// .o_ledg(LEDG), // [8:0]
+	// .o_ledr(LEDR) // [17:0]
+);
+
+// SevenHexDecoder seven_dec0(
+// 	.i_num(play_time),
+// 	.o_seven_ten(HEX1),
+// 	.o_seven_one(HEX0)
+// );
+
+// SevenHexDecoder seven_dec1(
+// 	.i_num(recd_time),
+// 	.o_seven_ten(HEX5),
+//  	.o_seven_one(HEX4)
+// );
+
+// comment those are use for display
+assign HEX0 = '1;
+assign HEX1 = '1;
+assign HEX2 = '1;
+assign HEX3 = '1;
+assign HEX4 = '1;
+assign HEX5 = '1;
+assign HEX6 = '1;
+assign HEX7 = '1;
+
 endmodule

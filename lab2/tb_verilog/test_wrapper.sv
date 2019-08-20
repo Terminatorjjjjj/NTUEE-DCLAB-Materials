@@ -1,4 +1,4 @@
-module TestSlave(
+module TestSlave (
 	input               avm_clk,
 	input               avm_rst,
 	input        [4:0]  avm_address,
@@ -14,6 +14,7 @@ module TestSlave(
 	output             from232_ack,
 	input  logic [7:0] from232_dat
 );
+
 	logic [7:0] txdat;
 	logic [7:0] rxdat;
 	logic tx_src_rdy;
