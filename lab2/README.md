@@ -114,9 +114,9 @@ The requirements are:
 
 * src/DE2\_115
 	* All files related to the FPGA
-* pc_python/
+* src/pc_python/
 	* Python program for pc during RSA256 decryption
-* tb_verilog/
+* src/tb_verilog/
 	* Verilog testbench for RSA256 core and wrapper 
     * Rsa256Core.sv: Implement RSA256 decryption algorithm here.
     * Rsa256Wrapper.sv: Implement controller for RS232 protocal, including reading check bits and read/write data. 

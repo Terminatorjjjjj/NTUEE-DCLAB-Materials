@@ -34,14 +34,13 @@ Should we take care of XCLK in this lab?
 Try to figure it out from the *power down modes* register of WM8731.
 
 # Requirements
-The lab is very free. The only requirements are:
+Lab requirements are:
 
 * Implement a audio recorder/player with 16-bit resolution with FPGA,
   which should be able to record for 30 seconds.
 * You have to support 2x\~8x faster and 2\~8x slower play mode as well.
 * For slow play mode, you have to support piecewise-constant and linear interpolation
-  (You should have learned that in Signal and System). You have to demo that
-  with an oscilloscope (You can use a 3.5mm double male cable).
+  (You should have learned that in Signal and System).
 
 ## Bonus
 You can record for 30 minutes with the SDRAM or build GUI with the touch panel.
