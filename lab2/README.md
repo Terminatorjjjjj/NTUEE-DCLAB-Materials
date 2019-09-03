@@ -118,8 +118,11 @@ The requirements are:
 	* Python program for pc during RSA256 decryption
 * src/tb_verilog/
 	* Verilog testbench for RSA256 core and wrapper 
-    * Rsa256Core.sv: Implement RSA256 decryption algorithm here.
-    * Rsa256Wrapper.sv: Implement controller for RS232 protocal, including reading check bits and read/write data. 
+* src/Rsa256Core.sv
+    * Implement RSA256 decryption algorithm here.
+* src/Rsa256Wrapper.sv
+    * Implement controller for RS232 protocol
+    * Including reading check bits and read/write data. 
 
 ## Run pc_python program on pc
 
