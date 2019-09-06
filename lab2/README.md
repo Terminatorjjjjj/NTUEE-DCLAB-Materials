@@ -132,7 +132,7 @@ The requirements are:
     * Mac/Linux: run with command line
 * Command
 ```
-    python rs232.py
+    python rs232.py [COM? | /dev/ttyS0 | /dev/ttyUSB0]
 ```
 
 ## Testbench Usage
