@@ -47,7 +47,7 @@ Guess and observe what will happen?
 
     module Top (
         input        i_clk,
-        input        i_rst,
+        input        i_rst_n,
         input        i_start,
         output [3:0] o_random_out
     );
@@ -91,9 +91,9 @@ Guess and observe what will happen?
     end
 
     // ===== Sequential Circuits =====
-    always_ff @(posedge i_clk or negedge i_rst) begin
+    always_ff @(posedge i_clk or negedge i_rst_n) begin
        // reset
-       if (!i_rst) begin
+       if (!i_rst_n) begin
           o_random_out_r <= 4'd0;
           state_r        <= S_IDLE;
        end
