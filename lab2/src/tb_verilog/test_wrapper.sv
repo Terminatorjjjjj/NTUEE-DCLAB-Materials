@@ -1,6 +1,6 @@
 module TestSlave (
 	input               avm_clk,
-	input               avm_rst,
+	input               avm_rst_n,
 	input        [4:0]  avm_address,
 	input               avm_actually_read,
 	output logic [31:0] avm_readdata,
@@ -23,7 +23,7 @@ module TestSlave (
 	logic rx_dst_ack;
 	PPForward u_txctrl(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.src_rdy(tx_src_rdy),
 		.src_ack(tx_src_ack),
 		.dst_rdy(to232_rdy),
@@ -31,7 +31,7 @@ module TestSlave (
 	);
 	PPForward u_rxctrl(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.src_rdy(from232_rdy),
 		.src_ack(from232_ack),
 		.dst_rdy(rx_dst_rdy),
@@ -41,8 +41,8 @@ module TestSlave (
 	assign tx_src_rdy = avm_actually_write && avm_address == 4;
 	assign to232_dat = txdat;
 
-	always @(posedge avm_clk or negedge avm_rst) begin
-		if (!avm_rst) begin
+	always @(posedge avm_clk or negedge avm_rst_n) begin
+		if (!avm_rst_n) begin
 			txdat <= 0;
 			rxdat <= 0;
 		end else begin
@@ -70,7 +70,7 @@ module tb;
 	localparam CLK = 10;
 	localparam HCLK = CLK/2;
 
-	logic avm_rst;
+	logic avm_rst_n;
 	logic avm_clk;
 	initial avm_clk = 0;
 	always #HCLK avm_clk = ~avm_clk;
@@ -94,7 +94,7 @@ module tb;
 	logic        pass;
 
 	Rsa256Wrapper u_master(
-		.avm_rst(!avm_rst),
+		.avm_rst(!avm_rst_n),
 		.avm_clk(avm_clk),
 		.avm_address(avm_address),
 		.avm_read(avm_read),
@@ -109,12 +109,12 @@ module tb;
 	assign avm_actually_write = avm_write && avm_ack;
 	PPRandomDst#(1,4) u_pp_rnd_m2s(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy(avm_rdy),
 		.ack(avm_ack)
 	);
 	TestSlave u_slave(
-		.avm_rst(avm_rst),
+		.avm_rst_n(avm_rst_n),
 		.avm_clk(avm_clk),
 		.avm_address(avm_address),
 		.avm_actually_read(avm_actually_read),
@@ -130,50 +130,50 @@ module tb;
 	);
 	PPRandomDst#(1,8) u_pp_rnd_to232(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy(to232_rdy),
 		.ack(to232_ack)
 	);
 	PPRandomSrc#(1,8) u_pp_rnd_from232(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy(from232_rdy),
 		.ack(from232_ack)
 	);
 	PPCheck#(5) u_premature_read(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy_and_dat({avm_read,avm_address}),
 		.ack(avm_actually_read)
 	);
 	PPCheck#(5+32) u_premature_write(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy_and_dat({avm_write,avm_address,avm_writedata}),
 		.ack(avm_actually_write)
 	);
 	PPCheck#(8) u_premature_tx(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy_and_dat({u_slave.tx_src_rdy,u_slave.avm_writedata}),
 		.ack(u_slave.tx_src_ack)
 	);
 	PPCheck#(0) u_premature_rx(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy_and_dat(u_slave.rx_dst_rdy),
 		.ack(u_slave.rx_dst_ack)
 	);
 	PPFileInitiator #(8,"%x") u_input(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.rdy(from232_rdy),
 		.ack(from232_ack),
 		.dat(from232_dat)
 	);
 	PPFileMonitor #(8,"%x",100) u_output(
 		.clk(avm_clk),
-		.rst(avm_rst),
+		.rst_n(avm_rst_n),
 		.ack(to232_ack),
 		.dat(to232_dat)
 	);
@@ -188,11 +188,11 @@ module tb;
 		u_pp_rnd_m2s.count = -1;
 		u_pp_rnd_from232.count = 288;
 		u_pp_rnd_to232.count = 217 + EXTRA_ACK;
-		avm_rst = 1;
+		avm_rst_n = 1;
 		#1;
-		avm_rst = 0;
+		avm_rst_n = 0;
 		#100;
-		avm_rst = 1;
+		avm_rst_n = 1;
 		for (int i = 0; i < 1000000; ++i) begin
 			@(posedge avm_clk)
 			if (u_pp_rnd_from232.count == 0 && u_pp_rnd_to232.count <= EXTRA_ACK) begin

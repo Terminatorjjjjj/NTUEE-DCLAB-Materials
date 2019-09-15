@@ -152,30 +152,27 @@ Altpll pll0( // generate with qsys, please follow lab2 tutorials
 // you can decide key down settings on your own, below is just an example
 Debounce deb0(
 	.i_in(KEY[0]), // Record/Pause
+	.i_rst_n(KEY[3]),
 	.i_clk(CLK_12M),
 	.o_neg(key0down) 
 );
 
 Debounce deb1(
 	.i_in(KEY[1]), // Play/Pause
+	.i_rst_n(KEY[3]),
 	.i_clk(CLK_12M),
 	.o_neg(key1down) 
 );
 
 Debounce deb2(
 	.i_in(KEY[2]), // Stop
+	.i_rst_n(KEY[3]),
 	.i_clk(CLK_12M),
 	.o_neg(key2down) 
 );
 
-Debounce deb3(
-	.i_in(KEY[3]), // Reset
-	.i_clk(CLK_12M),
-	.o_neg(key3down) 
-);
-
 Top top0(
-	.i_rst(key3down),
+	.i_rst_n(KEY[3]),
 	.i_clk(CLK_12M),
 	.i_key_0(key0down),
 	.i_key_1(key1down),

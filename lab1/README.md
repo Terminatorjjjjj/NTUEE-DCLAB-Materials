@@ -7,8 +7,8 @@ Here is some guidelines about the recommended synthesizable code.
 ## Register and the Sequential Block
 The ONLY way you should use to generate registers is:
 
-    always_ff @(posedge clk or negedge rst) begin
-      if (!rst) begin
+    always_ff @(posedge clk or negedge rst_n) begin
+      if (!rst_n) begin
         a_r <= 1'b0;
         b_r <= '0;
       end
@@ -35,7 +35,7 @@ And be careful when X\_w appears in right hand side of combinational blocks.
     always_comb begin
       a_w = b_w + 1; // possibly wrong
     end
-    always_ff @(posedge clk or negedge rst) if (!rst)
+    always_ff @(posedge clk or negedge rst_n) if (!rst_n)
       a_w <= 0; // definitely wrong
     else if (cond) begin
       a_w <= ...; // definitely wrong

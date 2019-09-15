@@ -1,5 +1,5 @@
 module Top (
-	input i_rst,
+	input i_rst_n,
 	input i_clk,
 	input i_key_0,
 	input i_key_1,
@@ -75,7 +75,7 @@ assign o_SRAM_UB_N = 1'b0;
 // === I2cInitializer ===
 // sequentially sent out settings to initialize WM8731 with I2C protocal
 I2cInitializer init0(
-	.i_rst(i_rst),
+	.i_rst_n(i_rst_n),
 	.i_clk(i_clk_100K),
 	.i_start(),
 	.o_finished(),
@@ -88,7 +88,7 @@ I2cInitializer init0(
 // responsible for DSP operations including fast play and slow play at different speed
 // in other words, determine which data addr to be fetch for player 
 AudDSP dsp0(
-	.i_rst(i_rst),
+	.i_rst_n(i_rst_n),
 	.i_clk(),
 	.i_start(),
 	.i_pause(),
@@ -106,7 +106,7 @@ AudDSP dsp0(
 // === AudPlayer ===
 // receive data address from DSP and fetch data to sent to WM8731 with I2S protocal
 AudPlayer player0(
-	.i_rst(i_rst),
+	.i_rst_n(i_rst_n),
 	.i_bclk(i_AUD_BCLK),
 	.i_daclrck(i_AUD_DACLRCK),
 	.i_en(), // enable AudPlayer only when playing audio, work with AudDSP
@@ -117,7 +117,7 @@ AudPlayer player0(
 // === AudRecorder ===
 // receive data from WM8731 with I2S protocal and save to SRAM
 AudRecorder recorder0(
-	.i_rst(i_rst), 
+	.i_rst_n(i_rst_n), 
 	.i_clk(i_AUD_BCLK),
 	.i_lrc(i_AUD_ADCLRCK),
 	.i_start(),
@@ -132,8 +132,8 @@ always_comb begin
 	// design your control here
 end
 
-always_ff @(posedge i_AUD_BCLK or posedge i_rst) begin
-	if (i_rst) begin
+always_ff @(posedge i_AUD_BCLK or posedge i_rst_n) begin
+	if (!i_rst_n) begin
 		
 	end
 	else begin

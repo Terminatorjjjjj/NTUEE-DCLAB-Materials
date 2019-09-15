@@ -1,6 +1,6 @@
 module PPForward (
 	input      clk,
-	input      rst,
+	input      rst_n,
 	input      src_rdy,
 	output reg src_ack,
 	output reg dst_rdy,
@@ -13,8 +13,8 @@ always@* begin
 	dst_rdy_w = src_rdy || (dst_rdy && !dst_ack);
 end
 
-always @(posedge clk or negedge rst) begin
-	if (!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if (!rst_n) begin
 		dst_rdy <= 1'b0;
 	end else if (dst_rdy != dst_rdy_w) begin
 		dst_rdy <= dst_rdy_w;
@@ -27,7 +27,7 @@ endmodule
 
 module PPForwardLoopIn(
 	input      clk,
-	input      rst,
+	input      rst_n,
 	input      loop_done,
 	input      src_rdy,
 	output reg src_ack,
@@ -41,8 +41,8 @@ always@* begin
 	dst_rdy_w = (src_rdy && loop_done) || (dst_rdy && !dst_ack);
 end
 
-always @(posedge clk or negedge rst) begin
-	if (!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if (!rst_n) begin
 		dst_rdy <= 1'b0;
 	end else if (dst_rdy != dst_rdy_w) begin
 		dst_rdy <= dst_rdy_w;
@@ -55,7 +55,7 @@ endmodule
 
 module PPForwardLoopOut(
 	input      clk,
-	input      rst,
+	input      rst_n,
 	input      loop_done,
 	input      src_rdy,
 	output reg src_ack,
@@ -71,8 +71,8 @@ always@* begin
 	dst_rdy_w = src_rdy || (dst_rdy && !dst_ack && !loop_done);
 end
 
-always @(posedge clk or negedge rst) begin
-	if (!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if (!rst_n) begin
 		dst_rdy <= 1'b0;
 	end else if (dst_rdy != dst_rdy_w) begin
 		dst_rdy <= dst_rdy_w;

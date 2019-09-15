@@ -3,15 +3,15 @@ module PPRandomSrc #(
 	parameter ORDER = 8
 )(
 	input      clk,
-	input      rst,
+	input      rst_n,
 	output reg rdy,
 	input      ack
 );
 
 localparam MASK = (1<<ORDER)-1;
 integer count;
-always @(posedge clk or negedge rst) begin
-	if(!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if(!rst_n) begin
 		rdy <= 0;
 	end else if (ack || !rdy) begin
 		if (count != 0 && ($random & MASK) < PROB) begin
@@ -23,17 +23,17 @@ always @(posedge clk or negedge rst) begin
 	end
 end
 
-//////////
-//////////
-
 endmodule
+
+//////////
+//////////
 
 module PPRandomDst #(
 	parameter PROB = 200,
 	parameter ORDER = 8
 )(
 	input      clk,
-	input      rst,
+	input      rst_n,
 	input      rdy,
 	output reg ack
 );
@@ -42,8 +42,8 @@ integer count;
 localparam MASK = (1<<ORDER)-1;
 reg can_ack;
 always@* ack = can_ack & rdy;
-always @(posedge clk or negedge rst) begin
-	if(!rst || rdy) begin
+always @(posedge clk or negedge rst_n) begin
+	if(!rst_n || rdy) begin
 		can_ack <= count != 0 && ($random&MASK) < PROB;
 	end
 	if (ack) begin
@@ -60,15 +60,15 @@ module PPCheck #(
 	parameter BW = 0
 )(
 	input clk,
-	input rst,
+	input rst_n,
 	input [BW:0] rdy_and_dat,
 	input ack
 );
 
 reg should_keep;
 reg [BW:0] prev;
-always @(posedge clk or negedge rst) begin
-	if(!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if(!rst_n) begin
 		should_keep <= 0;
 	end else begin
 		if (should_keep && (prev !== rdy_and_dat || ^prev === 1'bx)) begin
@@ -93,7 +93,7 @@ module PPFileInitiator #(
 	parameter [127:0] FMT="%d"
 )(
 	input clk,
-	input rst,
+	input rst_n,
 	input rdy,
 	input ack,
 	output reg [BW-1:0] dat
@@ -106,8 +106,8 @@ reg [BW-1:0] dat_w, dat_r;
 
 always @* dat = rdy ? dat_r: X;
 
-always @(posedge clk or negedge rst) begin
-	if(!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if(!rst_n) begin
 		$fseek(fp, 0, 0);
 		$fscanf(fp, FMT, dat_r);
 	end else if (ack) begin
@@ -131,7 +131,7 @@ module PPFileMonitor #(
 	parameter MAX_ERR = 100
 )(
 	input clk,
-	input rst,
+	input rst_n,
 	input ack,
 	input [BW-1:0] dat
 );
@@ -153,8 +153,8 @@ begin
 end
 endtask
 
-always @(posedge clk or negedge rst) begin
-	if(!rst) begin
+always @(posedge clk or negedge rst_n) begin
+	if(!rst_n) begin
 		$fseek(fp, 0, 0);
 		error = 0;
 		received = 0;

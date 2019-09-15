@@ -141,7 +141,7 @@ logic [3:0] random_value;
 
 Debounce deb0(
 	.i_in(KEY[0]),
-	.i_rst(KEY[1]),
+	.i_rst_n(KEY[1]),
 	.i_clk(CLOCK_50),
 	.o_neg(keydown)
 );

@@ -1,7 +1,7 @@
 module Debounce (
 	input  i_in,
 	input  i_clk,
-	input  i_rst,
+	input  i_rst_n,
 	output o_debounced,
 	output o_neg,
 	output o_pos
@@ -29,12 +29,12 @@ always_comb begin
 	end else begin
 		o_debounced_w = o_debounced_r;
 	end
-	pos_w = ~o_debounced_r &  o_debounced_w;
-	neg_w =  o_debounced_r & ~o_debounced_w;
+	pos_w = ~o_debounced_r &  o_debounced_w; // detect i_in posedge
+	neg_w =  o_debounced_r & ~o_debounced_w; // detect i_in negedge
 end
 
-always_ff @(posedge i_clk or negedge i_rst) begin
-	if (!i_rst) begin
+always_ff @(posedge i_clk or negedge i_rst_n) begin
+	if (!i_rst_n) begin
 		o_debounced_r <= '0;
 		counter_r <= '0;
 		neg_r <= '0;
