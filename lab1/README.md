@@ -103,6 +103,8 @@ Guess and observe what will happen?
        end
     end
 
+    endmodule
+
 First, press *Key1* to reset and the dispay would show red "00". 
 If you press *Key0* when display shows "00", it will become "15".
 Every subsequent *Key0* press will decrease the number by 1 until "10" is reached.

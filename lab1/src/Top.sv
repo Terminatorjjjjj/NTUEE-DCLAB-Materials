@@ -5,6 +5,6 @@ module Top (
 	output [3:0] o_random_out
 );
 
-// please check out the working example in lab1 README first
+// please check out the working example in lab1 README (or Top_exmaple.sv) first
 
 endmodule
