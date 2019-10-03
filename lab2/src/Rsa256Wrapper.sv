@@ -21,7 +21,7 @@ localparam S_GET_DATA = 1;
 localparam S_WAIT_CALCULATE = 2;
 localparam S_SEND_DATA = 3;
 
-logic [255:0] n_r, n_w, e_r, e_w, enc_r, enc_w, dec_r, dec_w;
+logic [255:0] n_r, n_w, d_r, d_w, enc_r, enc_w, dec_r, dec_w;
 logic [1:0] state_r, state_w;
 logic [6:0] bytes_counter_r, bytes_counter_w;
 logic [4:0] avm_address_r, avm_address_w;
@@ -41,9 +41,9 @@ Rsa256Core rsa256_core(
     .i_rst(avm_rst),
     .i_start(rsa_start_r),
     .i_a(enc_r),
-    .i_e(e_r),
+    .i_d(d_r),
     .i_n(n_r),
-    .o_a_pow_e(rsa_dec),
+    .o_a_pow_d(rsa_dec),
     .o_finished(rsa_finished)
 );
 
@@ -71,7 +71,7 @@ end
 always_ff @(posedge avm_clk or posedge avm_rst) begin
     if (avm_rst) begin
         n_r <= 0;
-        e_r <= 0;
+        d_r <= 0;
         enc_r <= 0;
         dec_r <= 0;
         avm_address_r <= STATUS_BASE;
@@ -82,7 +82,7 @@ always_ff @(posedge avm_clk or posedge avm_rst) begin
         rsa_start_r <= 0;
     end else begin
         n_r <= n_w;
-        e_r <= e_w;
+        d_r <= d_w;
         enc_r <= enc_w;
         dec_r <= dec_w;
         avm_address_r <= avm_address_w;

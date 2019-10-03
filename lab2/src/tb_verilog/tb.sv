@@ -16,9 +16,9 @@ module tb;
 		.i_rst(rst),
 		.i_start(start_cal),
 		.i_a(encrypted_data),
-		.i_e(256'hB6ACE0B14720169839B15FD13326CF1A1829BEAFC37BB937BEC8802FBCF46BD9),
+		.i_d(256'hB6ACE0B14720169839B15FD13326CF1A1829BEAFC37BB937BEC8802FBCF46BD9),
 		.i_n(256'hCA3586E7EA485F3B0A222A4C79F7DD12E85388ECCDEE4035940D774C029CF831),
-		.o_a_pow_e(decrypted_data),
+		.o_a_pow_d(decrypted_data),
 		.o_finished(fin)
 	);
 
