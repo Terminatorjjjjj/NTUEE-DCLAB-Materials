@@ -148,3 +148,18 @@ The requirements are:
 ```
 **NOTICE:** Please follow the exact argument order, wrong order may lead to error. 
 
+## Python Reference Implementation
+
+This can be used to check all temporary results and generate test cases.
+Note that the size of plain text must be 31n.
+
+Encode:
+```
+    python2 rsa.py e < plain.txt > cipher.bin
+```
+
+Decode:
+```
+    python2 rsa.py d < cipher.bin > plain.txt
+```
+
